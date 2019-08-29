@@ -1,54 +1,52 @@
 "use strict"
 
-const lines = document.getElementById( 'input-values' ).value.split( '\n' );
-const arr = [];
-let line;
+document.getElementById( "compute" ).onclick = function() {
+	const lines = document.getElementById( 'input-values' ).value.split( '\n' );
+	const arr = [];
+	let line;
 
-for ( let i = 0; i < lines.length; i++ ) {
-	line = parseInt( lines[ i ] );
-	if ( ! isNaN( line ) ) {
-		if ( arr[ line ] !== undefined ) {
-			arr[ line ]++;
-		} else {
-			arr[ line ] = 1;
-		}
-	}
-}
-
-const first_six = [];
-console.log(arr)
-let max;
-let last_i;
-for ( let j = 0; j < 6; j++ ) {
-	max = 0;
-	last_i = 0;
-	arr.map((item, index) => {
-		if ( item > max ) {
-			max = item;
-			last_i = index;
-		}
-	});
-	arr[ last_i ] = 0;
-	first_six.push( last_i );
-}
-
-/*
- * @author: https://stackoverflow.com/a/43260158/9379697
- */
-function perm(xs) {
-	let ret = [];
-	for ( let i = 0; i < xs.length; i = i + 1 ) {
-		let rest = perm( xs.slice( 0, i ).concat( xs.slice( i + 1 ) ) );
-
-		if ( ! rest.length ) {
-			ret.push( [ xs[ i ] ] );
-		} else {
-			for ( let j = 0; j < rest.length; j = j + 1 ) {
-				ret.push( [ xs[ i ] ].concat( rest[ j ] ) );
+	for ( let i = 0; i < lines.length; i++ ) {
+		line = parseInt( lines[ i ] );
+		if ( ! isNaN( line ) ) {
+			if ( arr[ line ] !== undefined ) {
+				arr[ line ]++;
+			} else {
+				arr[ line ] = 1;
 			}
 		}
 	}
-	return ret;
-}
 
-console.log( perm(first_six) );
+	let max1 = 0, max1_i = 0;
+	let max2 = 0, max2_i = 0;
+	arr.map((item, i) => {
+		if ( item > max1 ) {
+			max1 = item;
+			max1_i = i;
+		}
+	});
+	arr.map((item, i) => {
+		if ( item > max2 && item < max1 ) {
+			max2 = item;
+			max2_i = i;
+		}
+	});
+
+	const biggestNo = [];
+	arr.map((item, i) => {
+		if ( item === max1 || item === max2 ) {
+			biggestNo.push( i );
+		}
+	});
+
+	document.getElementById('results').value = '';
+	for ( let i = 0; i < 10; i++ ) {
+		const finalArr = [];
+		while ( finalArr.length < 6 ) {
+			let r = Math.floor( Math.random() * biggestNo.length );
+			if ( finalArr.indexOf( biggestNo[r] ) === -1 ) {
+				finalArr.push( biggestNo[ r ] );
+			}
+		}
+		document.getElementById('results').value += finalArr + "\n\n";
+	}
+}
